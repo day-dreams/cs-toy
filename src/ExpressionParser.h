@@ -117,17 +117,17 @@ double parser(string text) {
     operators.pop();
   }
 
-   {
-     // show the reverse polish novation
-     cout << "RPN: ";
-     auto novation = reverse_polish_novation;
-     while (!novation.empty()) {
-       cout << novation.front() << " ";
-       novation.pop();
-     }
-     cout << endl;
-   }
- 
+  {
+    // show the reverse polish novation
+    cout << "RPN: ";
+    auto novation = reverse_polish_novation;
+    while (!novation.empty()) {
+      cout << novation.front() << " ";
+      novation.pop();
+    }
+    cout << endl;
+  }
+
   return calculate(reverse_polish_novation);
 }
 }

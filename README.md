@@ -33,3 +33,7 @@ sh run-client.sh 8080 "(1+2+3+4+5+6+7)*10"
 
 客户端
 ![](./pics/client.png)
+
+# 已知bug
+
+* 非法表达式输入会引起core dump

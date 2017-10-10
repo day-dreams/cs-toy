@@ -19,16 +19,18 @@ void callback(int socket, Ipv4Addr addr) {
   int buffersize = 1024;
   char buffer[1024] = "";
 
-  cout<<"connection from:"<<" ("<<addr.get_ip()<<":"<<addr.get_port()<<") "<<endl;
+  // output connection info
+  cout << "connection from:"
+       << " (" << addr.get_ip() << ":" << addr.get_port() << ") " << endl;
 
   recv(socket, buffer, buffersize, 0);
 
-  if (buffer[0] == '*') {
-    string expression(buffer+1);
-    cout<<expression<<endl;
-    auto result =to_string(parser(expression));
-    send(socket,result.c_str(), result.size(), 0);
-  } else {
+  if (buffer[0] == '*') { // expression parser
+    string expression(buffer + 1);
+    cout << expression << endl;
+    auto result = to_string(parser(expression));
+    send(socket, result.c_str(), result.size(), 0);
+  } else { // ip.daydreams.space
     auto html = generate_html(addr.get_ip());
     send(socket, html.c_str(), html.size(), 0);
   }
