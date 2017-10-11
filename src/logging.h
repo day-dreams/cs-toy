@@ -16,9 +16,9 @@ const int DEBUG = 1;
 const int INFO = 2;
 const int ERROR = 3;
 const int FATAL = 4;
-#define LINE (__LINE__)
-#define FILE (__FILE__)
-#define log(detail, loglevel) _detail::_log(detail, FILE, loglevel, LINE);
+#define _LINE (__LINE__)
+#define _FILE (__FILE__)
+#define log(detail, loglevel) _detail::_log(detail, _FILE, loglevel, _LINE);
 
 #define set_print(need_print) _detail::_set_print(need_print);
 
