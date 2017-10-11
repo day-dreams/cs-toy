@@ -1,3 +1,5 @@
+#include "logging.h"
+
 #include <iostream>
 #include <map>
 #include <queue>
@@ -119,13 +121,13 @@ double parser(string text) {
 
   {
     // show the reverse polish novation
-    cout << "RPN: ";
+    auto detail = string("RPN ");
     auto novation = reverse_polish_novation;
     while (!novation.empty()) {
-      cout << novation.front() << " ";
+      detail += novation.front() + string(" ");
       novation.pop();
     }
-    cout << endl;
+    logging::log(detail, logging::INFO);
   }
 
   return calculate(reverse_polish_novation);

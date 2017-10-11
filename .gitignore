@@ -1,2 +1,6 @@
 core
-bin
+bin/*
+server
+client
+log.txt
+.vscode

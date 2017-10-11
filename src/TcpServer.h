@@ -2,6 +2,9 @@
 #define TCPSERVER
 
 #include "Ipv4Addr.h"
+#include "logging.h"
+#include "utility.h"
+
 #include <arpa/inet.h>
 #include <functional>
 #include <iostream>
@@ -26,25 +29,32 @@ public:
 
   void run() {
 
-    s = socket(AF_INET, SOCK_STREAM, 0);
-    int on = 1;
-    setsockopt(s, SOL_SOCKET, SO_REUSEPORT, (void *)&on, sizeof(on));
-    auto server_addr = listen_addr.convert_to_sockaddr();
-    bind(s, &server_addr, sizeof(server_addr));
-    listen(s, 5);
-
+    // 准备相关变量
     sockaddr client_addr;
     socklen_t size = sizeof(client_addr);
     int client_sock;
 
-    cout << "server is running at " << listen_addr.get_ip() << ":"
-         << listen_addr.get_port() << '\n';
+    // 创建套接字,设置选项
+    s = socket(AF_INET, SOCK_STREAM, 0);
+    int on = 1;
+    setsockopt(s, SOL_SOCKET, SO_REUSEPORT, (void *)&on, sizeof(on));
+    auto server_addr = listen_addr.convert_to_sockaddr();
+
+    // 绑定套接字,开始监听
+    bind(s, &server_addr, sizeof(server_addr));
+    listen(s, 5);
+
+    auto details = string("server is running at ") + listen_addr.get_ip() +
+                   string(":") + to_string(listen_addr.get_port());
+    logging::log(details, logging::INFO);
 
     while (true) {
 
+      // 等待一个客户的连接
       auto client_sock = accept(s, &client_addr, &size);
       Ipv4Addr clientaddr(client_addr);
 
+      // 调用约定好的函数来处理连接
       callback(client_sock, client_addr);
     }
   }
