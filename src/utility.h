@@ -8,7 +8,7 @@
 using namespace std;
 
 mutex _lock;
-IpSearcher searcher("data/ip2region.db");
+IpSearcher searcher("data/17monipdb.dat");
 
 string generate_html(string ip) {
   _lock.lock();
