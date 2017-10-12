@@ -2,6 +2,7 @@
 #define UTILITY
 
 #include "IpSearcher.h"
+#include "logging.h"
 #include <mutex>
 #include <string>
 using namespace std;
@@ -12,6 +13,7 @@ IpSearcher searcher("data/ip2region.db");
 string generate_html(string ip) {
   _lock.lock();
   auto region = searcher.search(ip);
+  logging::log(ip + string(" ") + region, logging::INFO);
   _lock.unlock();
   auto html =
       string("HTTP/1.1 200 OK\n\n<html><meta http-equiv=\"Content-Type\" "

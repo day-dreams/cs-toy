@@ -36,7 +36,6 @@ public:
     ip2region_create(&ip2rEntry, dbFile);
   }
 
-  //
   ~IpSearcher() { ip2region_destroy(&ip2rEntry); }
 
   string search(string ip) {
@@ -46,8 +45,6 @@ public:
       line[i] = ip[i];
     line[ip.size()] = '\0';
     func_ptr(&ip2rEntry, line, &datablock);
-    printf("%d|%s in %.5f millseconds\n", datablock.city_id, datablock.region,
-           123.0);
     return string(datablock.region);
   }
 };

@@ -49,19 +49,17 @@ void worker_callback(int i) {
 
     // 准备接受空间
     int buffersize = 1024;
-    char buffer[1024] = "";
+    char buffer[buffersize] = "";
 
     // 设置超时时限为1,避免被TCP连接攻击
     struct timeval timeout;
     timeout.tv_sec = 3;
     timeout.tv_usec = 0;
-
-    // 接收用户请求数据
     setsockopt(connection.remote_socket, SOL_SOCKET, SO_RCVTIMEO,
                (const char *)&timeout, sizeof(timeout));
 
+    // 接收用户请求数据
     auto succeeded = recv(connection.remote_socket, buffer, buffersize, 0);
-
     if (succeeded == -1) { //接受数据超时,主动关闭,进入下次循环
 
       auto detail = string("客户:(") + connection.remote_addr.get_ip() +
@@ -72,6 +70,8 @@ void worker_callback(int i) {
 
       continue;
     }
+
+    // 业务逻辑
     if (buffer[0] == '*') { // 算术表达式解析服务
 
       string expression(buffer + 1);
