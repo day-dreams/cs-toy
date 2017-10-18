@@ -5,6 +5,7 @@
 #include "logging.h"
 #include "utility.h"
 
+#include <cstring>
 #include <iostream>
 #include <string>
 #include <sys/socket.h>
@@ -49,7 +50,8 @@ void worker_callback(int i) {
 
     // 准备接受空间
     int buffersize = 1024;
-    char buffer[buffersize] = "";
+    char buffer[buffersize];
+    memset(buffer, '\0', buffersize);
 
     // 设置超时时限为1,避免被TCP连接攻击
     struct timeval timeout;
@@ -62,10 +64,12 @@ void worker_callback(int i) {
     auto succeeded = recv(connection.remote_socket, buffer, buffersize, 0);
     if (succeeded == -1) { //接受数据超时,主动关闭,进入下次循环
 
-      auto detail = string("客户:(") + connection.remote_addr.get_ip() +
-                    string(",") + to_string(connection.remote_addr.get_port()) +
-                    string(") ") + string("发送请求超时,尝试主动关闭连接");
-      logging::log(detail, logging::ERROR);
+      auto details = string("客户:(") + connection.remote_addr.get_ip() +
+                     string(",") +
+                     to_string(connection.remote_addr.get_port()) +
+                     string(")") + string("发送请求超时,尝试主动关闭连接");
+
+      logging::log(details, logging::ERROR);
       close(connection.remote_socket);
 
       continue;
@@ -75,7 +79,6 @@ void worker_callback(int i) {
     if (buffer[0] == '*') { // 算术表达式解析服务
 
       string expression(buffer + 1);
-      // cout << expression << endl;
       auto result = to_string(parser(expression));
       send(connection.remote_socket, result.c_str(), result.size(), 0);
 
